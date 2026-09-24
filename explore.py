@@ -112,6 +112,7 @@ import matplotlib.pyplot as plt
 # filter out noise: players with very few actions barely register
 plot_df = profiles[profiles["total_xt"] > 1.0].copy()
 top_undervalued = plot_df.sort_values("undervalued_score", ascending=False).head(8)
+top_xt_overall = plot_df.sort_values("total_xt", ascending=False).head(1)
 
 fig, ax = plt.subplots(figsize=(10, 7))
 fig.patch.set_facecolor("#0d1b2a")
@@ -121,12 +122,19 @@ ax.scatter(plot_df["g_plus_a"], plot_df["total_xt"],
            color="#4a90d9", alpha=0.5, s=40, label="All players")
 ax.scatter(top_undervalued["g_plus_a"], top_undervalued["total_xt"],
            color="#f4a300", s=80, label="Most undervalued", zorder=5)
+ax.scatter(top_xt_overall["g_plus_a"], top_xt_overall["total_xt"],
+           color="#e63946", s=100, label="Highest total xT", zorder=6)
 
 for _, row in top_undervalued.iterrows():
     ax.annotate(row["player"].split()[-1],
                 (row["g_plus_a"], row["total_xt"]),
                 textcoords="offset points", xytext=(6, 4),
                 color="white", fontsize=9)
+
+ax.annotate(top_xt_overall.iloc[0]["player"].split()[-1],
+            (top_xt_overall.iloc[0]["g_plus_a"], top_xt_overall.iloc[0]["total_xt"]),
+            textcoords="offset points", xytext=(6, 4),
+            color="white", fontsize=9, fontweight="bold")
 
 ax.set_xlabel("Goals + Assists", color="white")
 ax.set_ylabel("Total xT (whole tournament)", color="white")
